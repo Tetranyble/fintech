@@ -26,7 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
         ]);
 
-        //
+        $middleware->alias([
+            'csrf' => \App\Http\Middleware\VerifyCsrfToken::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
