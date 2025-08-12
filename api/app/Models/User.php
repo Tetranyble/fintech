@@ -14,7 +14,7 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -29,7 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'username',
         'phone_verified_at',
-        'email_verified_at'
+        'email_verified_at',
     ];
 
     /**
@@ -58,7 +58,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getJWTCustomClaims()
     {
-        return (new UserResource($this->load('roles')))
+        return (new UserResource($this))
             ->toResponse(app('request'))->getData(true);
     }
 
@@ -70,5 +70,15 @@ class User extends Authenticatable implements JWTSubject
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class, 'customer_id');
+    }
+
+    public function hasSufficientBalance(float $amount): bool
+    {
+        return $this->balance >= $amount;
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'user_id');
     }
 }

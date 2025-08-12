@@ -2,10 +2,9 @@
 
 namespace App\Events;
 
+use App\Models\Payment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -15,28 +14,34 @@ class PaymentStatusChanged implements ShouldBroadcast, ShouldQueue
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $paymentId;
-    public $status;
-    public $timestamp;
-    public $customerId;
+    public function __construct(public Payment $payment) {}
 
-    public function __construct($paymentId, $status, $timestamp, $customerId)
+    public function broadcastOn(): Channel
     {
-        $this->paymentId = $paymentId;
-        $this->status = $status;
-        $this->timestamp = $timestamp;
-        $this->customerId = $customerId;
-    }
-
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('customer.' . $this->customerId),
-        ];
+        return new Channel('payment.'.$this->payment->id);
     }
 
     public function broadcastAs(): string
     {
-        return 'payment.status.changed';
+        return 'payment.status.updated';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'payment_id' => $this->payment->id,
+            'status' => $this->payment->status,
+            'message' => $this->getStatusMessage(),
+        ];
+    }
+
+    protected function getStatusMessage(): string
+    {
+        return match ($this->payment->status) {
+            'pending' => 'Payment initiated',
+            'processing' => 'Payment being processed',
+            'completed' => 'Payment processed successfully',
+            default => 'Payment status updated',
+        };
     }
 }

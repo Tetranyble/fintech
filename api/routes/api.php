@@ -27,4 +27,14 @@ Route::name('v1.')->prefix('v1')->group(function () {
     Route::post('/email/verification-notification', \App\Http\Controllers\Api\EmailVerificationNotificationCodeController::class)
         ->middleware(['guest:api', 'throttle:6,1'])
         ->name('verification.send');
+    Route::post('/users/logout', \App\Http\Controllers\Api\LogoutController::class)
+        ->middleware('auth:api')
+        ->name('users.logout');
+
+    Route::apiResource('payments', \App\Http\Controllers\Api\PaymentController::class)
+        ->middleware('auth:api')->only(['index', 'store', 'show']);
+    Route::get('balance', [\App\Http\Controllers\Api\AccountController::class, 'show'])
+        ->middleware('auth:api');
+    Route::get('transactions', [\App\Http\Controllers\Api\TransactionController::class, 'index'])
+        ->middleware('auth:api')->name('transactions.index');
 });

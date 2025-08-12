@@ -91,8 +91,5 @@ class VerifyEmailController extends Controller
 
     }
 
-    protected function authenticate(string $email)
-    {
-
-    }
+    protected function authenticate(string $email) {}
 }

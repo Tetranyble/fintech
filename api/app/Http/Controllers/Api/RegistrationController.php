@@ -69,8 +69,7 @@ class RegistrationController extends Controller
     public function __invoke(RegistrationRequest $request): JsonResponse
     {
         $user = User::create($this->filter($request));
-        //event(new ApiRegistered($user));
-
+        // event(new ApiRegistered($user));
 
         return $this->created(
             new UserResource($user),

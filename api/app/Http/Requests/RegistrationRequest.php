@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
-
 /**
  * @OA\Schema(schema="RegistrationRequest")
  * {
@@ -82,7 +81,7 @@ class RegistrationRequest extends FormRequest
             'lastname' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            //'referrer' => ['nullable', 'string', 'exists:users,username'],
+            // 'referrer' => ['nullable', 'string', 'exists:users,username'],
             'role' => 'nullable|string',
         ];
     }

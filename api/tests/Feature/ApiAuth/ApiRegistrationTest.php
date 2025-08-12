@@ -2,17 +2,14 @@
 
 namespace Tests\Feature\ApiAuth;
 
-
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class ApiRegistrationTest extends TestCase
 {
     use RefreshDatabase;
-
 
     public function test_a_user_registration_request_requires_an_email()
     {
@@ -68,7 +65,5 @@ class ApiRegistrationTest extends TestCase
 
         $user = User::find($response->json('data.id'));
 
-
     }
-
 }

@@ -2,32 +2,68 @@
 
 namespace App\Services;
 
+use App\Events\BalanceUpdated;
 use App\Events\PaymentStatusChanged;
 use App\Models\Payment;
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class PaymentService
 {
-
-    public function processPayment($paymentId, $customerId)
+    public function processPayment(Payment $payment): void
     {
-        DB::transaction(function () use ($paymentId, $customerId) {
-            $payment = Payment::findOrFail($paymentId);
+        DB::transaction(function () use ($payment) {
+            // Create debit transaction
+            $debitTransaction = $payment->user->transactions()->create([
+                'type' => Transaction::TYPE_DEBIT,
+                'amount' => $payment->amount,
+                'description' => 'Payment to '.$payment->recipient,
+                'payment_id' => $payment->id,
+            ]);
 
-            // Simulate randomized payment result (success ~70% chance)
-            $isSuccess = rand(1, 10) > 3;
-            $newStatus = $isSuccess ? 'successful' : 'failed';
+            // Update sender balance
+            $payment->user->balance -= $payment->amount;
+            $payment->user->save();
 
-            $payment->update(['status' => $newStatus]);
+            // Update payment status
+            $payment->status = 'processing';
+            $payment->save();
 
-            // Dispatch the queued event
-            event(new PaymentStatusChanged($payment->id, $newStatus, now(), $customerId));
+            // Broadcast events
+            event(new BalanceUpdated($payment->user, $debitTransaction));
+            event(new PaymentStatusChanged($payment));
 
-            // If success, update balance (assume a Balance model)
-            if ($isSuccess) {
-                //$balance = Balance::where('customer_id', $customerId)->first();
-                //$balance->update(['amount' => $balance->amount - $payment->amount]);
+            // Step 3: Payment Completion (simulated)
+            $this->completePayment($payment);
+        });
+    }
+
+    public function completePayment(Payment $payment): void
+    {
+
+        DB::transaction(function () use ($payment) {
+            $payment->status = 'completed';
+            $payment->save();
+
+            // If recipient is internal user, create credit transaction
+            $recipient = User::where('email', $payment->recipient)->first();
+
+            if ($recipient) {
+                $creditTransaction = $recipient->transactions()->create([
+                    'type' => Transaction::TYPE_CREDIT,
+                    'amount' => $payment->amount,
+                    'description' => 'Payment from '.$payment->user->name,
+                    'payment_id' => $payment->id,
+                ]);
+
+                $recipient->balance += $payment->amount;
+                $recipient->save();
+
+                event(new BalanceUpdated($recipient, $creditTransaction));
             }
+
+            event(new PaymentStatusChanged($payment));
         });
     }
 }

@@ -6,7 +6,6 @@ use App\Events\PaymentStatusChanged;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
@@ -36,7 +35,7 @@ class PaymentNotificationTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post('/broadcasting/auth', [
-            'channel_name' => 'customer.' . $user->id,
+            'channel_name' => 'customer.'.$user->id,
         ]);
 
         $response->assertStatus(200);
@@ -48,7 +47,7 @@ class PaymentNotificationTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post('/broadcasting/auth', [
-            'channel_name' => 'customer.' . ($user->id + 1),
+            'channel_name' => 'customer.'.($user->id + 1),
         ]);
 
         $response->assertStatus(403);
