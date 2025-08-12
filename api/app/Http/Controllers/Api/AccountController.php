@@ -36,7 +36,7 @@ class AccountController extends Controller
     {
         $user = $request->user('api');
 
-        return new AccountResource([
+        return response()->json([
             'balance' => $user->balance,
             'currency' => 'USD',
             'last_updated' => $user->updated_at,
