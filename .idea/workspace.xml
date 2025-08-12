@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e4f7dc7-0153-4c84-ae31-480aae3194dd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/api/config/cors.php" beforeDir="false" afterPath="$PROJECT_DIR$/api/config/cors.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app" beforeDir="false" afterPath="$PROJECT_DIR$/app" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nginx/fintech.conf" beforeDir="false" afterPath="$PROJECT_DIR$/nginx/fintech.conf" afterDir="false" />
-    </list>
+    <list default="true" id="0e4f7dc7-0153-4c84-ae31-480aae3194dd" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -213,7 +207,7 @@
       <option name="presentableId" value="Default" />
       <updated>1754992842896</updated>
       <workItem from="1754992845227" duration="4997000" />
-      <workItem from="1754999593515" duration="12020000" />
+      <workItem from="1754999593515" duration="12404000" />
     </task>
     <servers />
   </component>
